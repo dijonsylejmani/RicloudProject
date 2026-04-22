@@ -1,1 +1,118 @@
-my project file
+# PROJEKT: WEBFAQË PËR LINJAT E AUTOBUSAVE ME REZERVIM ONLINE DHE NDJEKJE LIVE TË RRUGËS
+
+## PËRSHKRIMI I PËRGJITHSHËM
+Krijimi i një webfaqeje ku përdoruesit mund të:
+- Shohin të gjitha linjat e autobusave sipas qyteteve.
+- Rezervojnë bileta online.
+- Zgjedhin pagesën: me kartelë (online) ose me para në dorë (cash) në ndalesë.
+- Zgjedhin ndenjësen specifike ku do të ulen (hartë vizuale e autobusit).
+- Ndjekin lëvizjen live të autobusit në një hartë (me opsione satelite, terrain, dhe navigacion rrugor – jo në vijë ajrore).
+- Rruga të shfaqet duke u vizatuar live ndërsa autobusi lëviz (nga nisja deri në destinacion).
+
+## FUNKSIONALITETET KRYESORE
+
+### 1. Menaxhimi i linjave dhe qyteteve
+- Admin panel për të shtuar/fshirë/redaktuar linja (qyteti nisjes, destinacioni, oraret, çmimi, vendet e lira).
+- API publike për Frontend që të listojë linjat.
+
+### 2. Rezervimi i biletave
+- Përdoruesi zgjedh një linjë → shikon hartën e ndenjëseve (grid p.sh 4x12).
+- Ndenjëset e zëna janë gri/të bllokuara.
+- Zgjedh ndenjësen e lirë → shton në shportë.
+- Formulari: emri, mbiemri, email, numri i telefonit.
+- Zgjedh pagesën: “Kartë online” ose “Cash në ndalesë”.
+  - Nëse kartë: integrim me Stripe/Paylik, pas pagese gjenerohet bileta PDF/QR.
+  - Nëse cash: rezervimi mbahet për 24 orë, pastaj lirohet nëse nuk paguhet fizikisht.
+
+### 3. Harta live dhe navigimi rrugor (JO AJROR)
+- Harta e ndarë në 3 shtresa: 
+  - **Satelite** (p.sh. Mapbox Satellite ose Google Maps Satellite)
+  - **Terrain** (lartësitë, malet)
+  - **Rrugore** (default street map)
+- Vizatimi i rrugës së planifikuar (route polyline) bazuar në rrugë reale (OpenStreetMap + OSRM ose GraphHopper).
+- Kur autobusi fillon lëvizjen (simulim ose GPS real):
+  - Një marker (ikonë autobusi) lëviz përgjatë rrugës.
+  - Segmenti i kaluar vizatohet me ngjyrë tjetër (p.sh. jeshile) dhe segmenti i mbetur me gri.
+  - Përditësimi çdo 2-5 sekonda (WebSocket ose polling).
+- Kliko “Trego rrugën time” – harta fokusohet te autobusi dhe rruga.
+
+### 4. Njoftimet dhe statusi
+- Përdoruesi merr email/SMS për konfirmimin e rezervimit.
+- Në ditën e udhëtimit, mund të shohë pozicionin live të autobusit (p.sh. “autobusi është 20 minuta larg”).
+
+## TEKNOLOGJITË E REKOMANDUARA PËR SECILIN ROL
+
+### FRONTEND
+- **Framework**: React.js (me Vite) ose Vue.js + Pinia.
+- **Styling**: TailwindCSS + shadcn/ui ose Material UI.
+- **Harta**: Leaflet.js + React-Leaflet ose Mapbox GL JS.
+- **Seat map**: Komponent vizual interaktiv (canvas ose div grid).
+- **State management**: Redux Toolkit / Zustand.
+- **Komunikimi me backend**: Axios (REST) + Socket.io client (për pozicionin live).
+
+### BACKEND
+- **Gjuha**: Node.js + Express (ose Python FastAPI).
+- **Auth**: JWT për admin dhe përdorues.
+- **Pagesat**: Stripe API (kartë) + ruajtje e transaksioneve në DB.
+- **Realtime**: Socket.io (për dërgimin e koordinatave të autobusit).
+- **Routing engine**: OSRM (Open Source Routing Machine) ose Mapbox Directions API për të gjeneruar rrugën sipas rrugëve tokësore.
+- **Storage**: PostgreSQL (me PostGIS për gjeo-datat) + Redis për cache të rrugës.
+
+### DEVOPS & INFRASTRUCTURE
+- **Containerization**: Docker (backend, frontend, database, redis, osrm).
+- **Orchestration**: Docker Compose për lokal, Kubernetes për prod (opsional).
+- **Web Server**: Nginx (reverse proxy + static files).
+- **Hosting**: DigitalOcean / AWS EC2 / Hetzner.
+- **Monitoring**: Prometheus + Grafana (për të parë nëse autobusët “live” janë duke dërguar sinjale).
+- **Map tiles**: Nëse përdorim OSM, mund të hostojmë tile server-in tonë (mod_tile) ose të përdorim Mapbox/Stadia për thjeshtësi.
+
+### SIGURIA
+- HTTPS (Let’s Encrypt).
+- Validim i të dhënave në backend (për të mos rezervuar të njëjtën ndenjëse dy herë).
+- Rate limiting për API-të e rezervimit.
+- Sanitizim i inputeve.
+
+## RRITJA (SCALING) PËR TË ARDHMEN
+- Nëse priten shumë përdorues, WebSocket-et mund të shpërndahen me Redis adapter.
+- Cache i rrugëve (p.sh. rruga mes Tiranë-Durrës ruhet për 24 orë).
+
+## DETYRAT E EKIPIT (PROJEKT I NDARË NË ROLE)
+
+1. **UX/UI Designer** – krijon mockups për:
+   - Faqen e linjave dhe rezervimit.
+   - Seat picker.
+   - Harta live me lëvizjen e autobusit.
+   - Procesi i pagesës (kartë vs cash).
+
+2. **Frontend** – implementon të gjitha pamjet dhe logjikën e ndërveprimit me API-të, WebSocket.
+
+3. **Backend** – ndërton REST API për linjat, rezervimet, ndenjëset, pagesat; dhe WebSocket server për dërgimin e pozicionit live.
+
+4. **Database** – krijon skemën: `cities`, `routes`, `buses`, `seats`, `reservations`, `payments`, `live_locations`.
+
+5. **DevOps** – konfiguron serverin, deployment, SSL, backup, dhe siguron që OSRM ose Mapbox të funksionojë pa ndërprerje.
+
+6. **Gjeo / Routing specialist** (nëse ka) – përgatit dataset e rrugëve për OSRM dhe koordinatat për linjat e autobusave.
+
+## KRITERET E PRANIMIT (ACCEPTANCE CRITERIA)
+
+- [ ] Përdoruesi mund të zgjedhë një qytet nisjeje dhe destinacion dhe të shohë linjat e disponueshme.
+- [ ] Pas zgjedhjes së linjës, shfaqet harta e ndenjëseve dhe ai mund të zgjedhë një vend.
+- [ ] Rezervimi bëhet pa gabime dhe nëse zgjedh “kartë”, ridrejtohet te Stripe (test mode).
+- [ ] Në panelin e adminit shihen rezervimet dhe ndenjëset e zëna.
+- [ ] Në faqen “Live Track” shfaqet një autobus (simulim) duke lëvizur nga pika A në B, rruga vizatohet mbi harta satelite/terrain dhe nuk është vijë e drejtë ajrore, por ndjek rrugët reale.
+- [ ] Harta ka butona për ndryshimin e stilit: Street, Satellite, Terrain.
+
+## SHËNIME SHTESË
+- Fillimisht, lëvizja live mund të simulohet me një skript që dërgon koordinata të paracaktuara përmes Socket.io.
+- Në fazën e dytë, mund të integrohet GPS real nga pajisja e autobusit (p.sh. përmes një aplikacioni shoferi).
+- Pagesa me cash nuk kërkon integrim bankar, por thjesht ruajtje të statusit “pending_cash” në DB.
+
+## AFATET E SUGJERUARA
+- Javën 1-2: Dizajni dhe skema e DB.
+- Javën 3-4: Backend CRUD + seat logic + Stripe test.
+- Javën 5-6: Frontend (linjat, seat picker, pagesa).
+- Javën 7-8: Harta live + routing + WebSocket.
+- Javën 9: Testime + Deployment.
+
+Ky dokument shërben si **Prompt për ekipin zhvillues** dhe mund të futet në ChatGPT, Claude, ose GitHub Copilot për gjenerim të kodit fillestar.
