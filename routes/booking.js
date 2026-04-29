@@ -24,7 +24,6 @@ router.post("/", async (req, res) => {
       });
     }
 
-    // blloko seats
     await Seat.updateMany(
       { seatNumber: { $in: seats } },
       { isBooked: true }
