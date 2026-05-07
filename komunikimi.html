@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Komunikimi - MBROJTJA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* RESET & GLOBAL */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, sans-serif;
+        }
+
+        :root {
+            --bg-main: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary: #2563eb;
+            --primary-dark: #1e3a8a;
+            --accent-red: #dc2626;
+            --border: #e2e8f0;
+            --card: #ffffff;
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme='dark'] {
+            --bg-main: #0f172a;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --primary: #3b82f6;
+            --primary-dark: #60a5fa;
+            --accent-red: #ef4444;
+            --border: #334155;
+            --card: #1e293b;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.5;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Layout containers */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-box {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+
+        .brand-text h1 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-text p {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--primary);
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: var(--accent-red);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            filter: brightness(1.1);
+        }
+
+        .btn-ghost {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .btn-ghost:hover {
+            background: #e2e8f0;
+        }
+
+        .theme-toggle {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-main);
+        }
+
+        /* Main chat area: two columns side-by-side */
+        .chat-layout-main {
+            display: flex;
+            flex-direction: row;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        /* LEFT COLUMN: messages + compose (takes 2/3 or flexible) */
+        .chat-messages-area {
+            flex: 2;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        /* RIGHT COLUMN: nickname & countdown (fixed width) */
+        .chat-side-panel {
+            flex: 1;
+            max-width: 280px;
+            background: var(--card);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            padding: 1.2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            height: fit-content;
+            position: sticky;
+            top: 90px;
+        }
+
+        .chat-messages {
+            min-height: 380px;
+            max-height: 480px;
+            overflow-y: auto;
+            padding: 1rem;
+            border-radius: 16px;
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+        }
+
+        .chat-bubble {
+            margin-bottom: 1rem;
+            padding: 0.75rem 1rem;
+            border-radius: 14px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .chat-bubble-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .chat-bubble-meta {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-transform: uppercase;
+        }
+
+        .chat-delete-btn {
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--bg-main);
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .chat-delete-btn:hover {
+            color: #dc2626;
+            border-color: #fecaca;
+        }
+
+        .chat-bubble-body {
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .chat-bubble-time {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            margin-top: 0.4rem;
+        }
+
+        .chat-compose {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+        }
+
+        .chat-compose textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            font-size: 0.9rem;
+            resize: vertical;
+        }
+
+        .chat-attach-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .chat-attach-label {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: var(--text-muted);
+        }
+
+        .chat-attach-btn {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.35rem 0.8rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            cursor: pointer;
+        }
+
+        .chat-attach-btn:hover {
+            background: var(--bg-main);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .chat-attach-note {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+        }
+
+        .chat-attachment-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .chat-staged-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.25rem 0.45rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg-main);
+            font-size: 0.75rem;
+        }
+
+        .chat-staged-remove {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--text-muted);
+        }
+
+        .chat-attach-list {
+            margin-top: 0.5rem;
+        }
+
+        .chat-attach-img {
+            max-width: 100%;
+            max-height: 180px;
+            border-radius: 10px;
+        }
+
+        /* Right panel specific */
+        .side-label {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        #chatNickname {
+            width: 100%;
+            padding: 0.7rem;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            font-size: 0.9rem;
+        }
+
+        #chatSaveNickBtn {
+            width: 100%;
+            justify-content: center;
+            background: var(--primary);
+            color: white;
+        }
+
+        .chat-nick-countdown {
+            background: var(--bg-main);
+            border-radius: 14px;
+            padding: 0.8rem 0.6rem;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .countdown-title {
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .countdown-grid {
+            display: flex;
+            justify-content: space-between;
+            gap: 0.3rem;
+        }
+
+        .cd-block {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .cd-val {
+            font-size: 1.4rem;
+            font-weight: 900;
+            font-variant-numeric: tabular-nums;
+            color: var(--primary);
+            line-height: 1.2;
+        }
+
+        .cd-lbl {
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .chat-nick-lock-hint {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 0.2rem;
+        }
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 2rem 0;
+            margin-top: 3rem;
+            background: var(--card);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 780px) {
+            .chat-layout-main {
+                flex-direction: column;
+            }
+            .chat-side-panel {
+                max-width: 100%;
+                position: static;
+            }
+            .header-content {
+                flex-direction: column;
+                align-items: center;
+            }
+            nav ul {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body data-page="community-chat">
+    <header>
+        <div class="container header-content">
+            <div class="brand">
+                <div class="logo-box">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <div class="brand-text">
+                    <h1>Menaxhimi i Qenve Endacakë</h1>
+                    <p>Platforma Kombëtare e Sigurisë</p>
+                </div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Ballina</a></li>
+                    <li><a href="kerkesat.html">Kërkesat</a></li>
+                    <li><a href="ankesat.html">Ankesat</a></li>
+                    <li><a href="komunikimi.html" class="active">Komunikimi</a></li>
+                </ul>
+            </nav>
+            <div class="cta-group">
+                <button class="theme-toggle" id="themeToggle" title="Ndrysho Temën">
+                    <span id="themeIcon"></span>
+                </button>
+                <a href="kerkesat.html" class="btn btn-primary">Raporto Rastin</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="card" style="background: var(--card); border-radius: 18px; padding: 1.5rem; margin-bottom: 1.5rem; border:1px solid var(--border);">
+            <span class="badge" style="background: #eff6ff; color: #2563eb; padding:4px 12px; border-radius:100px; font-size:0.7rem; font-weight:800;">Komuniteti</span>
+            <h2 style="font-size: 1.8rem; font-weight: 900; margin-top: 0.5rem;">Komunikimi</h2>
+            <p style="color: var(--text-muted);">Shkëmbeni informata, këshilla dhe përvoja rreth rrezikut nga qentë endacak. Mesazhet ruhen lokalisht në shfletues.</p>
+        </div>
+
+        <!-- LAYOUT: messages left + right panel -->
+        <div class="chat-layout-main">
+            <!-- LEFT COLUMN (messages + compose) -->
+            <div class="chat-messages-area">
+                <div id="chatMessages" class="chat-messages" aria-live="polite">
+                    <!-- Mesazhet do te shfaqen ketu -->
+                </div>
+                <form id="chatForm" class="chat-compose">
+                    <textarea id="chatMessageInput" placeholder="Shkruani mesazhin tuaj..." rows="3" maxlength="2000"></textarea>
+                    <div class="chat-attach-bar">
+                        <span class="chat-attach-label">Bashkëngjit</span>
+                        <button type="button" class="chat-attach-btn" id="chatAttachPhoto">Foto</button>
+                        <button type="button" class="chat-attach-btn" id="chatAttachVideo">Video</button>
+                        <button type="button" class="chat-attach-btn" id="chatAttachFile">File</button>
+                        <input type="file" id="chatFilePhoto" accept="image/*" multiple hidden>
+                        <input type="file" id="chatFileVideo" accept="video/*" multiple hidden>
+                        <input type="file" id="chatFileAny" multiple hidden>
+                    </div>
+                    <p class="chat-attach-note">Foto/Video/Skedar deri në 2.5 MB për skedar, max 5 për mesazh.</p>
+                    <div id="chatAttachmentPreview" class="chat-attachment-preview"></div>
+                    <div class="chat-send-row" style="display: flex; justify-content: flex-end;">
+                        <button type="submit" class="btn btn-primary">Dërgo Mesazhin</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- RIGHT COLUMN (nickname + countdown + lock info) -->
+            <div class="chat-side-panel">
+                <div>
+                    <div class="side-label">Emri / Nofka</div>
+                    <input type="text" id="chatNickname" placeholder="Emri juaj" maxlength="40" autocomplete="nickname" style="margin-top: 6px;">
+                    <button type="button" class="btn" id="chatSaveNickBtn" style="margin-top: 8px;">Ruaj Emrin</button>
+                </div>
+
+                <!-- COUNTDOWN CARD : 9 days + hours + mins + secs -->
+                <div id="chatNickCountdown" class="chat-nick-countdown">
+                    <div class="countdown-title">⏳ Bllokimi i ndryshimit të emrit</div>
+                    <div class="countdown-grid">
+                        <div class="cd-block">
+                            <span id="chatCountdownDays" class="cd-val">9</span>
+                            <span class="cd-lbl">Ditë</span>
+                        </div>
+                        <div class="cd-block">
+                            <span id="chatCountdownHours" class="cd-val">00</span>
+                            <span class="cd-lbl">Orë</span>
+                        </div>
+                        <div class="cd-block">
+                            <span id="chatCountdownMins" class="cd-val">00</span>
+                            <span class="cd-lbl">Min</span>
+                        </div>
+                        <div class="cd-block">
+                            <span id="chatCountdownSecs" class="cd-val">00</span>
+                            <span class="cd-lbl">Sek</span>
+                        </div>
+                    </div>
+                </div>
+                <p id="chatNickLockHint" class="chat-nick-lock-hint" style="font-size:0.7rem;"></p>
+                <div style="margin-top: 8px; font-size: 0.7rem; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 12px;">
+                    ⚡ Emri bllokohet për 9 ditë pas ruajtjes. Pas kësaj periudhe mund ta ndërroni përsëri.
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <p>© 2026 MBROJTJA - REPUBLIKA E KOSOVËS. TË GJITHA TË DREJTAT E REZERVUARA.</p>
+            <div class="footer-links">
+                <a href="#">Termat</a>
+                <a href="#">Privatësia</a>
+                <a href="#">Partnerët</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ------------------------ CONSTANTS & STORAGE -------------------------
+        const CHAT_STORAGE_KEY = 'mbrojtja_community_chat_v1';
+        const CHAT_NICK_KEY = 'mbrojtja_chat_nick_v1';
+        const CHAT_NICK_LOCK_UNTIL_KEY = 'mbrojtja_chat_nick_lock_until_v1';
+        const CHAT_OWNER_KEY = 'mbrojtja_chat_owner_v1';
+        const CHAT_NICK_LOCK_MS = 9 * 24 * 60 * 60 * 1000;  // 9 ditë
+        const CHAT_ATTACH_MAX_BYTES = 2.5 * 1024 * 1024;
+        const CHAT_ATTACH_MAX_FILES = 5;
+        const THEME_KEY = 'mbrojtja_theme_v1';
+
+        let stagedChatAttachments = [];
+        let chatNickCountdownIntervalId = null;
+
+        // Helper functions
+        function escapeChatHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text == null ? '' : String(text);
+            return div.innerHTML;
+        }
+
+        function getChatNickLockUntilMs() {
+            const raw = localStorage.getItem(CHAT_NICK_LOCK_UNTIL_KEY);
+            if (!raw) return 0;
+            const n = parseInt(raw, 10);
+            return Number.isFinite(n) ? n : 0;
+        }
+
+        function isChatNickLocked() {
+            return getChatNickLockUntilMs() > Date.now();
+        }
+
+        function getOrCreateChatOwnerId() {
+            let id = localStorage.getItem(CHAT_OWNER_KEY);
+            if (!id) {
+                id = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36)}`;
+                localStorage.setItem(CHAT_OWNER_KEY, id);
+            }
+            return id;
+        }
+
+        function canDeleteChatMessage(m) {
+            if (!m) return false;
+            if (m.ownerId) {
+                const stored = localStorage.getItem(CHAT_OWNER_KEY);
+                return !!stored && m.ownerId === stored;
+            }
+            const myNick = (localStorage.getItem(CHAT_NICK_KEY) || '').trim();
+            const nickField = document.getElementById('chatNickname');
+            const fromField = (nickField && nickField.value) ? nickField.value.trim() : '';
+            const effectiveNick = fromField || myNick;
+            return (m.author || 'Anonim').trim() === effectiveNick;
+        }
+
+        function loadChatMessages() {
+            try {
+                const raw = localStorage.getItem(CHAT_STORAGE_KEY);
+                const parsed = raw ? JSON.parse(raw) : [];
+                return Array.isArray(parsed) ? parsed : [];
+            } catch(e) { return []; }
+        }
+
+        function saveChatMessages(messages) {
+            const trimmed = messages.slice(-200);
+            localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(trimmed));
+        }
+
+        function isChatSafeDataUrl(u) {
+            return typeof u === 'string' && u.startsWith('data:') && !u.startsWith('data:text/html');
+        }
+
+        function renderChatMessageAttachments(m) {
+            const list = m && m.attachments;
+            if (!Array.isArray(list) || !list.length) return '';
+            const parts = list.map(a => {
+                if (!a || !a.dataUrl || !isChatSafeDataUrl(a.dataUrl)) return '';
+                const name = escapeChatHtml(a.name || 'skedar');
+                const mime = String(a.mime || '').toLowerCase();
+                if (mime.startsWith('image/')) {
+                    return `<div class="chat-attach-block"><img src="${a.dataUrl}" alt="${name}" class="chat-attach-img" loading="lazy"></div>`;
+                }
+                if (mime.startsWith('video/')) {
+                    return `<div class="chat-attach-block"><video src="${a.dataUrl}" controls style="max-width:100%; max-height:200px;"></video></div>`;
+                }
+                return `<div class="chat-attach-block"><a href="${a.dataUrl}" download="${name}">📎 ${name}</a></div>`;
+            });
+            return parts.join('');
+        }
+
+        function renderChatMessages(container) {
+            if (!container) return;
+            const messages = loadChatMessages();
+            if (!messages.length) {
+                container.innerHTML = '<p style="color: var(--text-muted); text-align:center; padding:2rem;">📭 Ende nuk ka mesazhe. Filloni bisedën!</p>';
+                return;
+            }
+            container.innerHTML = messages.map(m => {
+                const deletable = canDeleteChatMessage(m);
+                const delBtn = deletable ? `<button class="chat-delete-btn" data-msg-id="${escapeChatHtml(m.id)}">Fshi</button>` : '';
+                return `
+                    <div class="chat-bubble" data-msg-id="${escapeChatHtml(m.id)}">
+                        <div class="chat-bubble-head">
+                            <span class="chat-bubble-meta">${escapeChatHtml(m.author || 'Anonim')}</span>
+                            ${delBtn}
+                        </div>
+                        <div class="chat-bubble-body">${escapeChatHtml(m.text || '')}</div>
+                        ${renderChatMessageAttachments(m)}
+                        <div class="chat-bubble-time">${escapeChatHtml(m.time || '')}</div>
+                    </div>
+                `;
+            }).join('');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function applyChatNickLockUI(nickInput, saveBtn, hintEl) {
+            const locked = isChatNickLocked();
+            if (nickInput) nickInput.readOnly = locked;
+            if (saveBtn) saveBtn.disabled = locked;
+            if (hintEl) {
+                if (locked) {
+                    const until = getChatNickLockUntilMs();
+                    const d = new Date(until);
+                    hintEl.textContent = `🔒 Emri është i bllokuar deri më ${d.toLocaleDateString('sq-AL')}. Mund ta ndërroni pas 9 ditësh.`;
+                    hintEl.hidden = false;
+                } else {
+                    hintEl.textContent = '';
+                    hintEl.hidden = true;
+                }
+            }
+            if (locked) {
+                const saved = localStorage.getItem(CHAT_NICK_KEY);
+                if (saved && nickInput) nickInput.value = saved;
+            }
+            syncCountdownUI();
+        }
+
+        function syncCountdownUI() {
+            if (chatNickCountdownIntervalId) {
+                clearInterval(chatNickCountdownIntervalId);
+                chatNickCountdownIntervalId = null;
+            }
+            const daysSpan = document.getElementById('chatCountdownDays');
+            const hoursSpan = document.getElementById('chatCountdownHours');
+            const minsSpan = document.getElementById('chatCountdownMins');
+            const secsSpan = document.getElementById('chatCountdownSecs');
+            const countdownBox = document.getElementById('chatNickCountdown');
+            if (!countdownBox) return;
+
+            const update = () => {
+                const until = getChatNickLockUntilMs();
+                const now = Date.now();
+                let diff = until - now;
+                if (diff <= 0) {
+                    if (daysSpan) daysSpan.textContent = '0';
+                    if (hoursSpan) hoursSpan.textContent = '00';
+                    if (minsSpan) minsSpan.textContent = '00';
+                    if (secsSpan) secsSpan.textContent = '00';
+                    const nickInput = document.getElementById('chatNickname');
+                    const saveBtn = document.getElementById('chatSaveNickBtn');
+                    if (nickInput) nickInput.readOnly = false;
+                    if (saveBtn) saveBtn.disabled = false;
+                    const hint = document.getElementById('chatNickLockHint');
+                    if (hint) { hint.textContent = ''; hint.hidden = true; }
+                    if (chatNickCountdownIntervalId) clearInterval(chatNickCountdownIntervalId);
+                    return;
+                }
+                const days = Math.floor(diff / (24*3600*1000));
+                diff %= (24*3600*1000);
+                const hours = Math.floor(diff / (3600*1000));
+                diff %= (3600*1000);
+                const mins = Math.floor(diff / (60*1000));
+                const secs = Math.floor((diff % (60*1000)) / 1000);
+                if (daysSpan) daysSpan.textContent = days;
+                if (hoursSpan) hoursSpan.textContent = String(hours).padStart(2,'0');
+                if (minsSpan) minsSpan.textContent = String(mins).padStart(2,'0');
+                if (secsSpan) secsSpan.textContent = String(secs).padStart(2,'0');
+            };
+            update();
+            if (isChatNickLocked()) {
+                chatNickCountdownIntervalId = setInterval(update, 1000);
+            } else {
+                if (daysSpan) daysSpan.textContent = '0';
+                if (hoursSpan) hoursSpan.textContent = '00';
+                if (minsSpan) minsSpan.textContent = '00';
+                if (secsSpan) secsSpan.textContent = '00';
+            }
+        }
+
+        function readChatFileAsDataAttachment(file, onDone, onErr) {
+            const r = new FileReader();
+            r.onload = () => onDone({ name: file.name, mime: file.type, dataUrl: r.result });
+            r.onerror = onErr;
+            r.readAsDataURL(file);
+        }
+
+        // Theme function with proper icons (sun/moon)
+        function initTheme() {
+            const savedTheme = localStorage.getItem(THEME_KEY) || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+
+            const themeBtn = document.getElementById('themeToggle');
+            if (themeBtn) {
+                themeBtn.onclick = () => {
+                    const current = document.documentElement.getAttribute('data-theme');
+                    const target = current === 'light' ? 'dark' : 'light';
+                    document.documentElement.setAttribute('data-theme', target);
+                    localStorage.setItem(THEME_KEY, target);
+                    updateThemeIcon(target);
+                };
+            }
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('themeIcon');
+            if (!icon) return;
+            if (theme === 'dark') {
+                icon.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>';
+            } else {
+                icon.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+            }
+        }
+
+        // Main init
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            const container = document.getElementById('chatMessages');
+            const form = document.getElementById('chatForm');
+            const nickInput = document.getElementById('chatNickname');
+            const msgInput = document.getElementById('chatMessageInput');
+            const saveNickBtn = document.getElementById('chatSaveNickBtn');
+            const hintEl = document.getElementById('chatNickLockHint');
+
+            const savedNick = localStorage.getItem(CHAT_NICK_KEY);
+            if (savedNick && nickInput) nickInput.value = savedNick;
+            if (saveNickBtn && nickInput && hintEl) applyChatNickLockUI(nickInput, saveNickBtn, hintEl);
+
+            if (saveNickBtn) {
+                saveNickBtn.addEventListener('click', () => {
+                    if (isChatNickLocked()) {
+                        alert('Emri është i bllokuar për 9 ditë. Nuk mund ta ndërroni tani.');
+                        return;
+                    }
+                    const newName = nickInput.value.trim();
+                    if (!newName) { alert('Shkruani emrin tuaj.'); return; }
+                    localStorage.setItem(CHAT_NICK_KEY, newName);
+                    localStorage.setItem(CHAT_NICK_LOCK_UNTIL_KEY, String(Date.now() + CHAT_NICK_LOCK_MS));
+                    applyChatNickLockUI(nickInput, saveNickBtn, hintEl);
+                    renderChatMessages(container);
+                    alert(`Emri "${newName}" u ruajt dhe do të bllokohet për 9 ditë.`);
+                });
+            }
+
+            renderChatMessages(container);
+
+            // Delete message
+            if (container) {
+                container.addEventListener('click', (e) => {
+                    const btn = e.target.closest('.chat-delete-btn');
+                    if (!btn) return;
+                    const id = btn.getAttribute('data-msg-id');
+                    if (!id) return;
+                    const msgs = loadChatMessages();
+                    const msg = msgs.find(m => m.id === id);
+                    if (!msg || !canDeleteChatMessage(msg)) return;
+                    const filtered = msgs.filter(m => m.id !== id);
+                    saveChatMessages(filtered);
+                    renderChatMessages(container);
+                });
+            }
+
+            // Attachments logic
+            const previewEl = document.getElementById('chatAttachmentPreview');
+            const filePhoto = document.getElementById('chatFilePhoto');
+            const fileVideo = document.getElementById('chatFileVideo');
+            const fileAny = document.getElementById('chatFileAny');
+            const btnPhoto = document.getElementById('chatAttachPhoto');
+            const btnVideo = document.getElementById('chatAttachVideo');
+            const btnFile = document.getElementById('chatAttachFile');
+
+            const renderStagedPreview = () => {
+                if (!previewEl) return;
+                if (!stagedChatAttachments.length) { previewEl.innerHTML = ''; return; }
+                previewEl.innerHTML = stagedChatAttachments.map((a, i) => `
+                    <div class="chat-staged-chip">
+                        <span>${escapeChatHtml(a.name)}</span>
+                        <button type="button" class="chat-staged-remove" data-idx="${i}">✖</button>
+                    </div>
+                `).join('');
+                document.querySelectorAll('.chat-staged-remove').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const idx = parseInt(btn.getAttribute('data-idx'),10);
+                        stagedChatAttachments.splice(idx,1);
+                        renderStagedPreview();
+                    });
+                });
+            };
+
+            const handleFiles = (files) => {
+                const arr = Array.from(files);
+                for (let f of arr) {
+                    if (stagedChatAttachments.length >= CHAT_ATTACH_MAX_FILES) { alert(`Max ${CHAT_ATTACH_MAX_FILES} skedarë`); break; }
+                    if (f.size > CHAT_ATTACH_MAX_BYTES) { alert(`Skedari ${f.name} > 2.5 MB`); continue; }
+                    readChatFileAsDataAttachment(f, (att) => {
+                        stagedChatAttachments.push(att);
+                        renderStagedPreview();
+                    }, () => alert('Leximi i skedarit dështoi.'));
+                }
+            };
+            if(btnPhoto && filePhoto) btnPhoto.onclick = () => filePhoto.click();
+            if(btnVideo && fileVideo) btnVideo.onclick = () => fileVideo.click();
+            if(btnFile && fileAny) btnFile.onclick = () => fileAny.click();
+            if(filePhoto) filePhoto.onchange = (e) => { handleFiles(e.target.files); filePhoto.value = ''; };
+            if(fileVideo) fileVideo.onchange = (e) => { handleFiles(e.target.files); fileVideo.value = ''; };
+            if(fileAny) fileAny.onchange = (e) => { handleFiles(e.target.files); fileAny.value = ''; };
+
+            // Submit
+            if (form) {
+                form.onsubmit = (e) => {
+                    e.preventDefault();
+                    const author = (localStorage.getItem(CHAT_NICK_KEY) || nickInput.value.trim()) || 'Anonim';
+                    const text = msgInput.value.trim();
+                    if (!text && stagedChatAttachments.length === 0) { alert('Shkruani mesazh ose bashkëngjitni skedar.'); return; }
+                    if (!localStorage.getItem(CHAT_NICK_KEY)) {
+                        localStorage.setItem(CHAT_NICK_KEY, author);
+                    }
+                    const msg = {
+                        id: Date.now().toString() + Math.random(),
+                        ownerId: getOrCreateChatOwnerId(),
+                        author: author,
+                        text: text || '(mesazh pa tekst)',
+                        time: new Date().toLocaleString('sq-AL', { dateStyle: 'short', timeStyle: 'short' })
+                    };
+                    if (stagedChatAttachments.length) msg.attachments = [...stagedChatAttachments];
+                    const msgs = loadChatMessages();
+                    msgs.push(msg);
+                    saveChatMessages(msgs);
+                    stagedChatAttachments = [];
+                    renderStagedPreview();
+                    msgInput.value = '';
+                    renderChatMessages(container);
+                };
+            }
+
+            // Storage sync across tabs
+            window.addEventListener('storage', (e) => {
+                if (e.key === CHAT_STORAGE_KEY) renderChatMessages(container);
+                if (e.key === CHAT_NICK_KEY || e.key === CHAT_NICK_LOCK_UNTIL_KEY) {
+                    if (nickInput && saveNickBtn && hintEl) applyChatNickLockUI(nickInput, saveNickBtn, hintEl);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kërkesat - MBROJTJA</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body data-page="request">
+    <header>
+        <div class="container header-content">
+            <div class="brand">
+                <div class="logo-box">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <div class="brand-text">
+                    <h1>Menaxhimi i Qenve Endacakë</h1>
+                    <p>Platforma Kombëtare e Sigurisë</p>
+                </div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Ballina</a></li>
+                    <li><a href="kerkesat.html" class="active">Kërkesat</a></li>
+                    <li><a href="ankesat.html">Ankesat</a></li>
+                    <li><a href="komunikimi.html" target="_blank" rel="noopener noreferrer">Komunikimi</a></li>
+                </ul>
+            </nav>
+            <div class="cta-group">
+                <button class="theme-toggle" id="themeToggle" title="Ndrysho Temën">
+                    <span id="themeIcon"></span>
+                </button>
+                <a href="ankesat.html" class="btn btn-danger uppercase">Dërgo Ankesë</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="grid-main">
+            <div style="display: flex; flex-direction: column; gap: 2rem;">
+                <div class="card">
+                    <div style="margin-bottom: 2rem;">
+                        <span class="badge" style="background: #eff6ff; color: #2563eb; border-color: #dbeafe;">Ndërhyrje & Siguri Publike</span>
+                        <h2 style="font-size: 2.25rem; font-weight: 900; margin-top: 1rem;">Kërkesë për Ndërhyrje</h2>
+                        <p style="color: #64748b; margin-top: 0.5rem; font-weight: 500;">Dërgoni kërkesë për trajtim të zonës ku ka rrezik nga qentë endacak (vendndodhje, numri i përafërt dhe përshkrimi).</p>
+                    </div>
+
+                    <form id="reportForm" class="form-container">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label>Komuna</label>
+                                <select id="municipality" required>
+                                    <option value="">Zgjidhni komunën...</option>
+                                    <option value="Gjilan">Gjilan</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Fshati/Lagjja (Opsionale)</label>
+                                <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                    <button type="button" id="modeFshatBtn" class="btn btn-primary" style="padding: 0.45rem 0.8rem;">Fshat</button>
+                                    <button type="button" id="modeLagjjaBtn" class="btn btn-ghost" style="padding: 0.45rem 0.8rem;">Lagjja</button>
+                                </div>
+                                <select id="villageSelect" style="display: block;">
+                                    <option value="">Zgjidhni fshatin e Gjilanit...</option>
+                                </select>
+                                <input type="text" id="lagjjaInput" placeholder="Shkruani lagjen tuaj..." style="display: none; margin-top: 0.5rem;">
+                                <input type="hidden" id="village">
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label>Data e Raportimit</label>
+                                <input type="date" id="eventDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Lokacioni Ekzakt</label>
+                                <button type="button" id="openLocationPickerBtn" class="btn btn-primary" style="width: 100%; justify-content: center;">Zgjidhni Vendndodhjen…</button>
+                                <p id="selectedLocationLabel" style="margin-top: 0.5rem; color: #64748b; font-size: 0.8rem;">Asnjë vendndodhje e zgjedhur.</p>
+                                <input type="hidden" id="exactLocation" required>
+                                <input type="hidden" id="locationLat">
+                                <input type="hidden" id="locationLng">
+                                <input type="hidden" id="locationStreet">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Përshkrimi i Kërkesës</label>
+                            <textarea id="content" placeholder="Psh: numri i qenve, sjellja/agresiviteti..." rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 1rem;">Dërgo Kërkesën</button>
+                    </form>
+                </div>
+
+                <div id="reportsArchive">
+                    <h3 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1.5rem;">Arkiva Ime e Kërkesave</h3>
+                    <div id="reportsList" class="list-container">
+                        <!-- Items injected here -->
+                    </div>
+                </div>
+            </div>
+
+            <aside>
+                <div class="card" style="background: #eff6ff; border-color: #dbeafe;">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" style="margin-bottom: 1rem;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <h3 style="color: #1e3a8a;">Çfarë të përfshini</h3>
+                    <p style="font-size: 0.85rem; color: #2563eb; font-weight: 600; margin-top: 5px;">Vendndodhjen e saktë, numrin e përafërt të qenve dhe nëse ka rrezik të menjëhershëm për qytetarët.</p>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <!-- Modal for "Shiko Plote" -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div id="modalTypeBadge" class="type-tag" style="display: inline-block; margin-bottom: 1rem;"></div>
+            <h2 id="modalTitle" style="font-weight: 900; margin-bottom: 0.5rem;"></h2>
+            <p id="modalDate" style="font-size: 0.75rem; color: #94a3b8; font-weight: 700; margin-bottom: 1.5rem;"></p>
+            <div id="modalBody" style="background: #f8fafc; padding: 1.5rem; border-radius: 12px; font-style: italic; color: #334155; margin-bottom: 2rem; white-space: pre-wrap;"></div>
+            
+            <div class="cta-group" style="justify-content: flex-end;">
+                <button id="downloadPdfBtn" class="btn btn-primary">Shkarko si PDF</button>
+                <button id="deleteReportBtn" class="btn btn-danger">Fshije</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container footer-content">
+            <p>© 2026 MBROJTJA - REPUBLIKA E KOSOVËS. TË GJITHA TË DREJTAT E REZERVUARA.</p>
+            <div class="footer-links">
+                <a href="#">Termat</a>
+                <a href="#">Privatësia</a>
+                <a href="#">Partnerët</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

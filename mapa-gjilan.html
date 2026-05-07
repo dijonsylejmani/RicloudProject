@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zgjidh Vendndodhjen - Gjilan</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+<body data-page="map-picker">
+    <header>
+        <div class="container header-content">
+            <div class="brand">
+                <div class="logo-box">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <div class="brand-text">
+                    <h1>Zgjedhja e Vendndodhjes</h1>
+                    <p>Qyteti i Gjilanit</p>
+                </div>
+            </div>
+            <div class="cta-group">
+                <a href="kerkesat.html" class="btn btn-ghost">Kthehu te Kërkesat</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="card map-picker-card">
+            <div class="map-picker-launch">
+                <button type="button" id="openStreetPickBtn" class="btn btn-primary map-open-streets-btn">Zgjidhni Vendndodhjen…</button>
+            </div>
+
+            <div id="streetPickPanel" class="street-pick-panel" hidden>
+                <div class="street-pick-toolbar">
+                    <h2 class="street-pick-heading">Rrugët në Gjilan (alfabetikisht)</h2>
+                    <button type="button" id="closeStreetPickBtn" class="btn btn-ghost street-pick-close">Mbyll</button>
+                </div>
+                <p id="streetLoadInfo" class="street-pick-load-info">Po ngarkohen emrat e rrugëve…</p>
+                <div id="gjilanStreetAlphabetList" class="street-pick-scroll" role="listbox" aria-label="Lista e rrugëve"></div>
+            </div>
+
+            <div class="map-picker-map-block">
+                <p id="mapSelectedLabel" class="map-picker-selected-label">Zgjidhni një rrugë nga lista, ose klikoni në hartë për një pikë.</p>
+                <div class="map-picker-actions">
+                    <button id="mapContinueBtn" type="button" class="btn btn-danger">Vazhdoj</button>
+                </div>
+                <div id="mapPickerCanvas" class="map-picker-canvas"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

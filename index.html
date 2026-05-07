@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBROJTJA - Rreziku nga Qentë Endacak</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="welcomeOverlay" class="welcome-overlay" role="dialog" aria-modal="true" aria-labelledby="welcomeOverlayTitle" aria-hidden="true">
+        <div class="welcome-overlay__bg" aria-hidden="true"></div>
+        <div class="welcome-overlay__inner">
+            <div class="welcome-overlay__logo-wrap">
+                <img
+                    src="logo Image Apr 20, 2026, 10_20_36 PM.png"
+                    alt="Logoja MBROJTJA — Menaxhimi i qenve endacakë"
+                    class="welcome-overlay__logo"
+                    width="280"
+                    height="280"
+                    decoding="async"
+                    fetchpriority="high"
+                />
+            </div>
+            <div class="welcome-overlay__content">
+                <div class="welcome-overlay__card">
+                    <p id="welcomeOverlayTitle" class="welcome-overlay__title">Mirë se vini në webfaqen tonë</p>
+                    <p class="welcome-overlay__subtitle">Këtu raportoni rrezikun nga qentë endacak, ndiqni hartën dhe ndihmoni në siguri më të mirë për komunitetin tuaj.</p>
+                    <button type="button" id="welcomeOverlayContinue" class="welcome-overlay__btn">
+                        <span>Vazhdoni tutje</span>
+                        <svg class="welcome-overlay__arrow" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <header>
+        <div class="container header-content">
+            <div class="brand">
+                <div class="logo-box">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <div class="brand-text">
+                    <h1>Menaxhimi i Qenve Endacakë</h1>
+                    <p>Platforma Kombëtare e Sigurisë</p>
+                </div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html" class="active">Ballina</a></li>
+                    <li><a href="kerkesat.html">Kërkesat</a></li>
+                    <li><a href="ankesat.html">Ankesat</a></li>
+                    <li><a href="komunikimi.html">Komunikimi</a></li>
+                </ul>
+            </nav>
+            <div class="cta-group">
+                <button class="theme-toggle" id="themeToggle" title="Ndrysho Temën">
+                    <span id="themeIcon"></span>
+                </button>
+                <a href="kerkesat.html" class="btn btn-danger uppercase">Raporto Rastin</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="hero">
+            <div class="hero-img-container">
+                <img src="logo Image Apr 20, 2026, 10_20_36 PM.png" alt="Rreziku nga qentë endacak" class="hero-img" referrerPolicy="no-referrer">
+            </div>
+            <div class="hero-content">
+                <span class="badge">Rreziku nga Qentë Endacak</span>
+                <h2>Raportim dhe Parandalim i Incidenteve</h2>
+                <p>Një iniciativë kombëtare për raportimin e rrezikut, orientimin e qytetarëve dhe uljen e incidenteve nga qentë endacak në çdo komunë të Kosovës.</p>
+                <div class="cta-group">
+                    <a href="kerkesat.html" class="btn btn-primary">Raporto Rastin</a>
+                    <a href="#si-funksionon" class="btn" style="background: transparent; color: white; border: 1px solid rgba(255,255,255,0.4);">Si funksionon?</a>
+                </div>
+            </div>
+            <!-- Decorative circle -->
+            <div style="position: absolute; right: -50px; bottom: -50px; width: 300px; height: 300px; background: rgba(255,255,255,0.1); border-radius: 50%; filter: blur(50px);"></div>
+        </div>
+
+        <section id="si-funksionon" class="how-it-works">
+            <div class="card">
+                <div style="margin-bottom: 1.5rem;">
+                    <span class="badge" style="background: #eff6ff; color: #2563eb; border-color: #dbeafe;">Tutorial</span>
+                    <h2 style="font-size: 2rem; font-weight: 900; margin-top: 1rem;">Si të bëj Kërkesë ose Ankesë?</h2>
+                    <p style="color: #64748b; margin-top: 0.5rem; font-weight: 500;">Ndiq këto hapa të thjeshtë për të raportuar rrezikun nga qentë endacak dhe për të ndjekur reagimin e komunës.</p>
+                </div>
+
+                <div class="how-grid">
+                    <div class="how-col">
+                        <h3 style="font-weight: 900; margin-bottom: 0.75rem;">Kërkesë (Ndërhyrje)</h3>
+                        <ol class="step-list">
+                            <li><b>Zgjidh komunën</b> dhe shkruaj lagjen/fshatin (nëse ka).</li>
+                            <li><b>Vendos datën</b> dhe përshkruaj <b>lokacionin ekzakt</b> (rruga/pika orientuese).</li>
+                            <li><b>Përshkruaj situatën</b>: numri i përafërt i qenve, sjellja dhe orari kur shfaqen.</li>
+                            <li><b>Dërgo kërkesën</b> dhe ruaje në arkivë për ta parë më vonë.</li>
+                        </ol>
+                        <div style="margin-top: 1rem;">
+                            <a href="kerkesat.html" class="btn btn-primary">Shko te Kërkesat</a>
+                        </div>
+                    </div>
+
+                    <div class="how-col">
+                        <h3 style="font-weight: 900; margin-bottom: 0.75rem;">Ankesë (Neglizhencë)</h3>
+                        <ol class="step-list">
+                            <li><b>Plotëso të njëjtat të dhëna</b> (komunë, datë, lokacion) me saktësi.</li>
+                            <li><b>Përshkruaj neglizhencën</b>: çfarë është raportuar më herët dhe çfarë mungon të bëhet.</li>
+                            <li><b>Dërgo ankesën</b> dhe ruaje në arkivë.</li>
+                            <li><b>Shkarko PDF</b> nga “Shiko Plotë” nëse të duhet si dëshmi.</li>
+                        </ol>
+                        <div style="margin-top: 1rem;">
+                            <a href="ankesat.html" class="btn btn-danger">Shko te Ankesat</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid-main">
+            <div class="feature-grid">
+                <div class="card feature-card">
+                    <div class="icon-circle" style="background: #fff7ed; color: #ea580c;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    </div>
+                    <h3>Zonat me Rrezik</h3>
+                    <p style="font-size: 0.8rem; color: #64748b; margin-top: 5px;">Zonat me rrezikshmëri duhet raportuar.</p>
+                </div>
+                <div class="card feature-card">
+                    <div class="icon-circle" style="background: #f0fdf4; color: #16a34a;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+                    </div>
+                    <h3>Udhëzime të Shpejta</h3>
+                    <p style="font-size: 0.8rem; color: #64748b; margin-top: 5px;">Duhet ditur se çfarë të bëni para, gjatë dhe pas një incidenti.</p>
+                </div>
+                <div class="card feature-card">
+                    <div class="icon-circle" style="background: #eff6ff; color: #2563eb;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <h3>Siguri në Komunitet</h3>
+                    <p style="font-size: 0.8rem; color: #64748b; margin-top: 5px;">Raportoni në kohë dhe ndihmoni në reagim më të shpejtë.</p>
+                </div>
+            </div>
+
+            <aside>
+                <div class="card">
+                    <h3 style="margin-bottom: 1.25rem; display: flex; align-items: center; gap: 8px;">
+                        <span style="width: 8px; height: 8px; background: #2563eb; border-radius: 50%; display: inline-block;"></span>
+                        Këshilla për Siguri
+                    </h3>
+                    <div style="display: grid; gap: 10px;">
+                        <div style="border: 1px solid #f1f5f9; border-radius: 12px; padding: 12px; background: #ffffff;">
+                            <p style="font-weight: 800; font-size: 0.85rem; color: #000000;">Ruani distancën</p>
+                            <p style="color: #64748b; font-size: 0.75rem; margin-top: 2px;">Mos vraponi dhe mos bëni lëvizje të shpejta.</p>
+                        </div>
+                        <div style="border: 1px solid #f1f5f9; border-radius: 12px; padding: 12px; background: #ffffff;">
+                            <p style="font-weight: 800; font-size: 0.85rem; color: #000000;">Mbroni fëmijët</p>
+                            <p style="color: #64748b; font-size: 0.75rem; margin-top: 2px;">Mbajini afër dhe shmangni rrugicat e izoluara.</p>
+                        </div>
+                        <div style="border: 1px solid #f1f5f9; border-radius: 12px; padding: 12px; background: #ffffff;">
+                            <p style="font-weight: 800; font-size: 0.85rem; color: #000000;">Raportoni menjëherë</p>
+                            <p style="color: #64748b; font-size: 0.75rem; margin-top: 2px;">Dërgoni vendndodhjen dhe numrin e përafërt të qenve.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 1.5rem; background: #fef2f2; border-color: #fee2e2;">
+                    <p style="font-size: 0.65rem; font-weight: 800; color: #dc2626; text-transform: uppercase;">Linja e Emergjencës 24/7</p>
+                    <p style="font-size: 1.75rem; font-weight: 900; color: #991b1b; margin-top: 4px;">0800 11 222</p>
+                    <p style="font-size: 0.75rem; color: #b91c1c; opacity: 0.7;">Thirrje pa pagesë prej Kosovës</p>
+                </div>
+            </aside>
+        </section>
+
+        <section style="margin-top: 2rem;">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                    <h3 style="font-size: 1.25rem; font-weight: 900;">Harta e Rrezikut - Gjilan</h3>
+                    <span style="font-size: 0.75rem; color: #64748b; font-weight: 700;">Pikat nga raportimet</span>
+                </div>
+                <p id="riskMapNote" style="font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;">Raporto një vendndodhje te Kërkesat për ta parë këtu.</p>
+                <div id="riskMapHome" style="height: 380px; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0;"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <p>© 2026 MBROJTJA - REPUBLIKA E KOSOVËS. TË GJITHA TË DREJTAT E REZERVUARA.</p>
+            <div class="footer-links">
+                <a href="#">Termat</a>
+                <a href="#">Privatësia</a>
+                <a href="#">Partnerët</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
