@@ -1,0 +1,38 @@
+name: ri_travel
+description: A modern bus booking platform
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  google_fonts: ^6.1.0
+  # google_maps_flutter: ^2.5.0  # Disabled for web support
+  provider: ^6.0.5
+  intl: ^0.18.1
+  shared_preferences: ^2.2.2
+  image_picker: ^1.0.4
+  url_launcher: ^6.1.14
+  flutter_map: ^8.3.0
+  latlong2: ^0.9.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+  
+  assets:
+    - images/
+  
+  # fonts:
+  #   - family: Inter
+  #     fonts:
+  #       - asset: assets/fonts/Inter-Regular.ttf
+  #       - asset: assets/fonts/Inter-Bold.ttf
+  #         weight: 700
